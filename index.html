@@ -1,0 +1,55 @@
+<? xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 STRICT//EN"
+            "http://www.w3.org/TR/xhtml1/xhtml-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Python Http Server</title>
+<meta charset="utf-8"/>
+<style type="text/css">
+table,td
+{
+	border: 1px dotted blue;
+}
+a#helpurl:hover + div
+{
+	display:inline;
+}
+a#helpfeat:hover + div
+{
+	display:inline;
+}
+a + div
+{
+	display:none;
+}
+td#tsub
+{
+	text-align: center;
+}
+input
+{
+ //display:block; //weird op
+}
+</style>
+<script type="text/javascript">
+</script>
+</head>
+<body>
+<h2>Mobile compliant web!</h2>
+<form action="/cgi-bin/querys.py" method="post">
+<table>
+<caption> </caption>
+<tr><label><td>URL &nbsp;&nbsp;:</td><td><input type="text" id="url" name="url"></td></label><td>
+<a href="#" id="helpurl">?</a><div>Enter url name here</div></td></tr>
+<tr><label><td>Features to check :</td>
+<td><input type="checkbox" name="feature" value="media queries">responsive</input> <br/>
+<input type="checkbox" name="feature" value="camera">camera</input> <br/>
+<input type="checkbox" name="feature" value="local storage">local storage</input> <br/>
+<input type="checkbox" name="feature" value="touch">touch</input> <br/>
+<input type="checkbox" name="feature" value="geolocation">geolocation</input> <br/></td></label>
+<td><a href="#" id="helpfeat">?</a><div>Check features to query about for specified url</div></td></tr>
+<!--tr><label><td>Query :</td><td><input type="text" id="query"></td></label></tr-->
+<tr><td colspan="2" id="tsub"><input type="submit" id="sub"></td></tr>
+</form>
+</body>
+</html>
