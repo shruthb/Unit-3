@@ -43,10 +43,10 @@ class website(): #threading.Thread
     def get_external_css(self,page): #,css
         "get css which is specified using link tag and check it for media queries"
         #print "External css : "
-        extStylesRe = re.compile("<link (.*?href=\"(.*?\.css).*?\".*?)\s?/>")  #link to external style sheet
+        extStylesRe = re.compile("<link (.*?href=['\"](.*?\.css).*?['\"].*?)\s?/>")  #link to external style sheet
         #mediaType = "((only |not )?(?P<mediaType>braille|embossed|handheld|print|projection|screen|speech|tty|tv|all) (and|,))*?"
         mediaFeature = re.compile("width|height|device-width|device-height|orientation|aspect-ratio|device-aspect-ratio|color|color-index|monochrome|resolution|scan|grid")
-        mediaAttrRe = re.compile("media=\"(?P<mediaFeature>.*?)\"") #media type - link's attr
+        mediaAttrRe = re.compile("media=['\"](?P<mediaFeature>.*?)['\"]") #media type - link's attr
         mediaAtRule = re.compile("@media (?P<media>[^{]*?){[^}]*?}") #@media rule in .css file 
         mediaCount = 0
         for each in extStylesRe.findall(page):
@@ -70,7 +70,7 @@ class website(): #threading.Thread
 
     def get_import_media(self,cssContent):
         "get css which is specified using @import rule and check it for media queries"
-        importAtRe = re.compile("@import url\(\"(.*?\.css).*?\"\)(?P<media>.*?);") #@import rule within style tag with media spec
+        importAtRe = re.compile("@import url\(['\"](.*?\.css).*?['\"]\)(?P<media>.*?);") #@import rule within style tag with media spec
         mediaFeature = re.compile("width|height|device-width|device-height|orientation|aspect-ratio|device-aspect-ratio|color|color-index|monochrome|resolution|scan|grid")
         mediaCount = 0
         for each in importAtRe.findall(cssContent):
@@ -91,7 +91,7 @@ class website(): #threading.Thread
 
     def get_internal_css(self,page):
         "get css which is written within style tag and check it for media queries"
-        intStyleRe = re.compile("<style type=\"text/css\">(.*?)</style>") #internal style tag
+        intStyleRe = re.compile("<style type=['\"]text/css['\"]>(.*?)</style>") #internal style tag
         #mediaAtRule = re.compile("@media (?P<media>[^{]*?){[^}]*?}") #@media rule within style tag or imported doc
         
         style = intStyleRe.findall(page)
@@ -114,10 +114,14 @@ class website(): #threading.Thread
         else:
             return False
         
-    def camera(self,page):
+    def camera(self,page,script):
         "check if the capture attribute is used for media capture"
+        getmedRe = re.compile("navigator\.[a-z]*?[gG]etUserMedia\(");
         captre = re.compile("<input .*? capture.*?/?>")
-        if captre.search(page) :
+        for each in script :
+            if getmedRe.search(each) :
+                return True
+        if captre.search(page):
             return True
         else:
             return False
@@ -129,7 +133,7 @@ class website(): #threading.Thread
         common = ["http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"]
         scriptre = re.compile("<script.*?>(.+?)</script>",re.DOTALL)
         scripts = scriptre.findall(page)
-        scriptlinksre = re.compile("<script .*?src=\"(.*?\.js.*?)\".*?></script>")
+        scriptlinksre = re.compile("<script .*?src=['\"](.*?\.js.*?)['\"].*?></script>")
         scriptlinks = scriptlinksre.findall(page)
         #print "scriptlinks : ",scriptlinks
         for each in scriptlinks :
@@ -177,7 +181,7 @@ class website(): #threading.Thread
         script = self.getscript(page)
         g = self.geolocation(script)
         l = self.localstorage(script)
-        c = self.camera(page)
+        c = self.camera(page,script)
         t = self.touch(page,script)
         return {"url":url,"media queries":m,"geolocation":g,"local storage":l,"camera":c,"touch":t}
 
