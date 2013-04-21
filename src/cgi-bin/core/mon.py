@@ -47,6 +47,8 @@ def getres(url,feat):
         each=str(each)
         li.append(each)
     #print "features : ",li
+    if type(feat) == str:
+        feat = [feat]
     for i in feat:
         if i in li:
             res[i]=True
@@ -58,6 +60,8 @@ def getres(url,feat):
 def geturl(url):
     '''the result wen only url is specified in the query nd no features'''
     res = collection.find_one({'url':url})
+    if not res:
+        return None
     del res[u'_id']
     li=[]
     res["url"]=str(res["url"])
