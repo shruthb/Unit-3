@@ -19,6 +19,7 @@ class crawler(threading.Thread) :
     def run(self):
         'crawls the web seed - must be a string, single domain for optimizing stuff in self.webwork'
         tocrawl = set([self.seed])
+        notendRe = re.compile("\.(pdf|zip|gif|rss|jpg)\s*$")
         for i in range(self.depth) : 
             foundcrawl = set([])
             res = []
@@ -38,10 +39,13 @@ class crawler(threading.Thread) :
                     
                 for link in (links.pop(0) for _ in xrange(len(links))):
                     #print link
+                    if notendRe.search(link) or link=='/':
+                        #print 'end : ',link
+                        continue
                     if link.startswith('/'): #relative
                         link = 'http://' + url[1] + link
                     elif link.startswith('#') or link.startswith("mailto") : #something on the same page
-                        pass #link = url.geturl() + url[2] + link
+                        continue #link = url.geturl() + url[2] + link
                     elif not link.startswith('http'):
                         link = urlparse.urljoin(url.geturl(),link)
                     if link.find(url[1])!=-1 and link not in self.crawled: #link belong to same domain
